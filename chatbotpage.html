@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Simple HTML Page</h1>
+    </header>
+    <main>
+        <p>This is a basic example of an HTML page. You can add more content here, like images, links, or additional text.</p>
+    </main>
+    <footer>
+        <p>&copy; 2024 My Simple HTML Page</p>
+    </footer>
+    <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/15643b6e-9b8a-4a0a-832b-9866fb16ea5a/webchat/config.js" defer></script>
+    <script>
+        window.botpressWebChat.onEvent(
+            (event) => {
+                if (event.type === 'MESSAGE.RECEIVED') {
+                    console.log('A new message was received!')
+                    if (event.value.payload.text === 'Upload the Birth Certificate' || event.value.payload.text === 'Upload the Marriage Certificate') {
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.addEventListener('change', (event) => {
+                            const file = event.target.files[0];
+                            const reader = new FileReader();
+                            reader.onload = async function (event) {
+                                const fileContent = event.target.result;
+                                const title = file.name;
+                                window.botpressWebChat.sendPayload(
+                                    {
+                                        type: 'Trigger',
+                                        payload: {
+                                            title: title,
+                                            content: fileContent
+                                        }
+                                    })
+                            }
+                            reader.readAsText(file);
+                        })
+                        fileInput.click();
+                    }
+                }
+            },
+            ['MESSAGE.RECEIVED']
+        )
+    </script>
+
+
+</body>
+</html>
